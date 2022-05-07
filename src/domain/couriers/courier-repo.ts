@@ -3,6 +3,7 @@ import { database } from "../../infra/inmemory-db";
 import { CourierAddRequest, CourierAddResponse } from "./add/courier-add-dto";
 import { CourierEntity } from "./entities";
 import { LookupRequest, LookupResponse } from "./lookup/courier-lookup-dto";
+import { RemoveCourierRequest, RemoveCourierResponse } from "./remove/courier-remove-dto";
 
 
 export const persistNewCourier = 
@@ -41,8 +42,7 @@ async (req: CourierAddRequest)
 
 }
 
-export const queryCouriersByCapacity = 
-async (req: LookupRequest)
+export const queryCouriersByCapacity = async (req: LookupRequest)
 : AsyncResult<LookupResponse> => {
 
 
@@ -60,7 +60,18 @@ async (req: LookupRequest)
 
 	}
 
-
 	return Result.ok({couriers: couriers});
+
+}
+
+export const hardDeleteCourier = async (req: RemoveCourierRequest)
+: AsyncResult<RemoveCourierResponse> => {
+
+	// I don't normally check whether the item to be deleted exists or not 
+	// (aside from needed logic to validate that the actor is indeed able to 
+	// remove the resource).
+	database.couriers.delete(req.id);
+
+	return Result.ok({});
 
 }

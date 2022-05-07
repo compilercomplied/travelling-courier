@@ -1,9 +1,12 @@
 import { Request, Response } from "express";
+import { request } from "http";
 import { AppResult } from "../../application/app-result";
 import { CourierAddRequest, CourierAddResponse } from "./add/courier-add-dto";
 import { addCourierLogic } from "./add/courier-add-logic";
 import { LookupRequest, LookupResponse } from "./lookup/courier-lookup-dto";
 import { findCouriersByCapacity } from "./lookup/courier-lookup-logic";
+import { RemoveCourierRequest, RemoveCourierResponse } from "./remove/courier-remove-dto";
+import { removeCourierLogic } from "./remove/courier-remove-logic";
 
 // Instead of returning primitives, lists or nothing at all, I'm a big advocate 
 // of returning a wrapping object. Even if it's an empty one. This way you can
@@ -38,6 +41,21 @@ export async function capacityLookup(req: Request, res: Response)
 	};
 
 	const result = await findCouriersByCapacity(request);
+
+	return result.isSuccess()
+		? AppResult.ok(result.value!)
+		: AppResult.fail(result.error!);
+
+}
+
+export async function removeCourier(req: Request, res: Response)
+	: Promise<AppResult<RemoveCourierResponse>> {
+
+	const request: RemoveCourierRequest = { 
+		id: parseInt(req.params["id"])
+	};
+
+	const result = await removeCourierLogic(request);
 
 	return result.isSuccess()
 		? AppResult.ok(result.value!)
