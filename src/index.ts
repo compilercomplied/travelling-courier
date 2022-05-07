@@ -14,6 +14,7 @@ happened to trigger due to some misconfiguration.
 */
 const port = process.env.PORT ?? 5000;
 
+app.use(express.json());
 
 // By now (first functional commit) I'm already missing a logging other than 
 // invoking express with the debug flag enabled. If I have spare time I'll try 

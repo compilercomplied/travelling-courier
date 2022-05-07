@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { wrap } from "../../../application/api";
-import { capacityLookup } from "../../../domain/couriers/courier-controller";
 import { RoutePrefixDef } from "../../models";
+import { addCourier, capacityLookup } from "../../../domain/couriers/courier-controller";
 
 const prefix: string = "/couriers";
 const router: Router = Router();
@@ -11,6 +11,10 @@ router
 	.get(wrap(capacityLookup))
 	;
 
+router
+	.route("/")
+	.post(wrap(addCourier))
+	;
 
 const courierRoutes: RoutePrefixDef = {
  prefix: prefix,

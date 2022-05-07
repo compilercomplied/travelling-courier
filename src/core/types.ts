@@ -48,6 +48,7 @@ export class Result<T> {
 
 }
 
+export type AsyncResult<T> = Promise<Result<T>>;
 // -----------------------------------------------------------------------------
 export class DomainError extends Error {
 
