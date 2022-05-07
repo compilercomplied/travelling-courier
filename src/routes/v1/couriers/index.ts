@@ -1,12 +1,14 @@
 import { Router } from "express";
+import { wrap } from "../../../application/api";
+import { capacityLookup } from "../../../domain/couriers/courier-controller";
 import { RoutePrefixDef } from "../../models";
 
 const prefix: string = "/couriers";
 const router: Router = Router();
 
 router
-	.route("/")
-	.get((req, res)=> res.send("hello world"))
+	.route("/lookup")
+	.get(wrap(capacityLookup))
 	;
 
 
