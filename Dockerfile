@@ -1,5 +1,4 @@
 
-# --- Build dependencies -------------------------------------------------------
 FROM node:17.8.0 as builder
 
 WORKDIR /usr
@@ -14,5 +13,4 @@ RUN npm run build
 
 EXPOSE 5000
 
-# CMD [ "ls" ]
 CMD ["npm", "run", "start"]
