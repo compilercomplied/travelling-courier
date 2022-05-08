@@ -30,7 +30,7 @@ As usual, this is lacking plenty of fancyness.
 
 1. **Validation**. Everything needs to be validated, and the lib that is configured for the open api spec has some useful goodies for that.
 2. Better **error handling**. There should be some kind of try-catch block in a higher context than the controllers. This can cleanly be implemented through an express middleware.
-3. There is no **logging** at all. Ideally, we'd be plugging a library to have request logging and then a logging system in place for
+3. There is no **logging** at all. Ideally, we'd be plugging a library to have request logging plus a logging system in place for internals.
 4. Better **open api docs**. Errors are not documented properly.
 5. Real **orchestration**. Environments, env variables, a well-formed entry point, observability sinks and all that jazz that actually matters when the code is not on your machine. A real database wouldn't hurt either.
 6. Better **dev experience** (linter, formatter, something like nodemon, semantic testing, etc).
