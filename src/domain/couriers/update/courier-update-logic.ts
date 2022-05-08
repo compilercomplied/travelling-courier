@@ -1,5 +1,5 @@
 import { AsyncResult } from "../../../core/types";
-import { updateCourier } from "../courier-repo";
+import { updateCourierInDB } from "../courier-repo";
 import { CourierUpdateRequest, CourierUpdateResponse } from "./courier-update-dto";
 
 
@@ -9,7 +9,7 @@ type UpdateCourierRepoCallback =
 
 export const updateCourierLogic = async (
 	req: CourierUpdateRequest, 
-	updateCallback: UpdateCourierRepoCallback = updateCourier
+	updateCallback: UpdateCourierRepoCallback = updateCourierInDB
 
 ) : AsyncResult<CourierUpdateResponse> => {
 

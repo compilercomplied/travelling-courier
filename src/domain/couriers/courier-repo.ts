@@ -55,8 +55,6 @@ export const persistNewCourier = async (
 
 	}
 
-	db.couriers
-
 	// Normally you'd use some mapping layer here. Either custom hand crafted 
 	// maps or through a library. In my experience, mapping libraries tend to 
 	// create problems instead of solving them. AFAIK, you can also use some of 
@@ -89,7 +87,7 @@ export const hardDeleteCourier = async (
 
 }
 
-export const updateCourier = async (
+export const updateCourierInDB = async (
 	req: CourierUpdateRequest,
 	db: Database = database
 )

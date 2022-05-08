@@ -1,11 +1,12 @@
 
+import { Database } from "../contracts/db";
 import { CourierEntity } from "../domain/couriers/entities";
 
 
 // I'm building a "mock-ish" in memory database to avoid fiddling around with
 // libraries, database engines, how to deploy the database... Ultimately,
 // all of that is not really the point of this anyway.
-class Database {
+class InMemoryDatabase implements Database {
 
 
 	readonly couriers: Map<number, CourierEntity>;
@@ -18,6 +19,6 @@ class Database {
 
 }
 
-const database = new Database();
+const database = new InMemoryDatabase();
 
 export { database };
