@@ -4,8 +4,34 @@ import { CourierAddRequest, CourierAddResponse } from "./add/courier-add-dto";
 import { CourierEntity } from "./entities";
 import { LookupRequest, LookupResponse } from "./lookup/courier-lookup-dto";
 import { RemoveCourierRequest, RemoveCourierResponse } from "./remove/courier-remove-dto";
+import { CourierUpdateRequest, CourierUpdateResponse } from "./update/courier-update-dto";
 
 
+// --- Queries -----------------------------------------------------------------
+export const queryCouriersByCapacity = async (req: LookupRequest)
+: AsyncResult<LookupResponse> => {
+
+
+	const couriers: number[] = [];
+
+	// This is a big no-no normally because we're iterating over the whole data.
+	// An ad hoc solution could be indexing values based on capacity in a map like
+	// {[capacity:number], courierIDs: number[]}, but then you have to deal with
+	// maintaining this fictional index which is quite tedious and convoluted.
+	for (let entry of database.couriers.values()) {
+
+		if(entry.max_capacity >= req.capacity_required) {
+			couriers.push(entry.id);
+		}
+
+	}
+
+	return Result.ok({couriers: couriers});
+
+}
+
+
+// --- Commands ----------------------------------------------------------------
 export const persistNewCourier = 
 async (req: CourierAddRequest)
 : AsyncResult<CourierAddResponse> => {
@@ -42,28 +68,6 @@ async (req: CourierAddRequest)
 
 }
 
-export const queryCouriersByCapacity = async (req: LookupRequest)
-: AsyncResult<LookupResponse> => {
-
-
-	const couriers: number[] = [];
-
-	// This is a big no-no normally because we're iterating over the whole data.
-	// An ad hoc solution could be indexing values based on capacity in a map like
-	// {[capacity:number], courierIDs: number[]}, but then you have to deal with
-	// maintaining this fictional index which is quite tedious and convoluted.
-	for (let entry of database.couriers.values()) {
-
-		if(entry.max_capacity >= req.capacity_required) {
-			couriers.push(entry.id);
-		}
-
-	}
-
-	return Result.ok({couriers: couriers});
-
-}
-
 export const hardDeleteCourier = async (req: RemoveCourierRequest)
 : AsyncResult<RemoveCourierResponse> => {
 
@@ -73,5 +77,26 @@ export const hardDeleteCourier = async (req: RemoveCourierRequest)
 	database.couriers.delete(req.id);
 
 	return Result.ok({});
+
+}
+
+export const updateCourier = 
+async (req: CourierUpdateRequest)
+: AsyncResult<CourierUpdateResponse> => {
+
+	const courier = database.couriers.get(req.id);
+
+	if (courier === undefined) {
+		const err = new DomainError("courier not found", "Notfound");
+		return Result.fail(err);
+	}
+
+	database.couriers.set(req.id, new CourierEntity(req.id, req.max_capacity));
+
+	const entity = database.couriers.get(req.id);
+	if (entity === undefined) { throw new Error("Corrupt database!"); }
+
+
+	return Result.ok({id: entity.id, max_capacity: entity.max_capacity});
 
 }

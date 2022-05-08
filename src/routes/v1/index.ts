@@ -3,7 +3,7 @@ import { RoutePrefixDef } from "../models";
 import courierRoutes from "./couriers";
 
 
-// It's always good to version your APIs but the requirements do sate the path 
+// It's always good to version your APIs but the requirements do state the path 
 // explicitly
 //const apiPrefix: string = "/api/v1";
 const apiPrefix: string = "/";

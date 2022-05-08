@@ -3,7 +3,7 @@
 
 export class CourierAddResponse {
 
-	constructor(id: number) { }
+	constructor(public id: number) { }
 
 }
 
