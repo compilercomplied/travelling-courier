@@ -1,4 +1,4 @@
-import { AsyncResult } from "../../../core/types";
+import { AsyncDomainResult, AsyncResult, DomainResult } from "../../../core/types";
 import { updateCourierInDB } from "../courier-repo";
 import { CourierUpdateRequest, CourierUpdateResponse } from "./courier-update-dto";
 
@@ -11,10 +11,10 @@ export const updateCourierLogic = async (
 	req: CourierUpdateRequest, 
 	updateCallback: UpdateCourierRepoCallback = updateCourierInDB
 
-) : AsyncResult<CourierUpdateResponse> => {
+) : AsyncDomainResult<CourierUpdateResponse> => {
 
 	const result = await updateCallback(req);
 
-	return result;
+	return DomainResult.from(result);
 
 }

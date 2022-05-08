@@ -1,6 +1,5 @@
-import { Request, Response } from "express";
-import { request } from "http";
-import { AppResult } from "../../application/app-result";
+import { Body, Delete, Get, Path, Post, Put, Query, Route, Tags } from "tsoa";
+import { APIResult, BaseController } from "../../application/api";
 import { CourierAddRequest, CourierAddResponse } from "./add/courier-add-dto";
 import { addCourierLogic } from "./add/courier-add-logic";
 import { LookupRequest, LookupResponse } from "./lookup/courier-lookup-dto";
@@ -16,70 +15,58 @@ import { updateCourierLogic } from "./update/courier-update-logic";
 // angry when that happens). The overhead is minimal and also helps with 
 // standardizing our code in an organic way.
 
-export async function addCourier(req: Request, res: Response)
-	: Promise<AppResult<CourierAddResponse>> {
+@Route("couriers")
+@Tags("Couriers")
+export class CouriersControllers extends BaseController {
 
-	// You want to validate this even before reaching the controller when 
-	// possible. In runtime type safety languages this is trivial to achieve,
-	// here I'd probably reach for middleware validation libraries. I'm 
-	// personally not a fan of doing the validation here or during route binding 
-	// because we'd be mixing contexts.
-	const request = req.body as CourierAddRequest;
+	@Get("lookup")
+	async capacityLookup(
+		@Query() capacity_required: number
+	): Promise<APIResult<LookupResponse>> {
 
-	const result = await addCourierLogic(request);
+		const request: LookupRequest = { capacity_required: capacity_required };
 
+		const result = await findCouriersByCapacity(request);
 
-	return result.isSuccess()
-		? AppResult.ok(result.value!)
-		: AppResult.fail(result.error!);
+		return this.resolve(result);
 
-}
+	}
 
-export async function capacityLookup(req: Request, res: Response)
-	: Promise<AppResult<LookupResponse>> {
-
-	const request: LookupRequest = { 
-		capacity_required: <unknown>req.query["capacity_required"] as number
-	};
-
-	const result = await findCouriersByCapacity(request);
-
-	return result.isSuccess()
-		? AppResult.ok(result.value!)
-		: AppResult.fail(result.error!);
-
-}
-
-export async function removeCourier(req: Request, res: Response)
-	: Promise<AppResult<RemoveCourierResponse>> {
-
-	const request: RemoveCourierRequest = { 
-		id: parseInt(req.params["id"])
-	};
-
-	const result = await removeCourierLogic(request);
-
-	return result.isSuccess()
-		? AppResult.ok(result.value!)
-		: AppResult.fail(result.error!);
-
-}
+	@Post()
+	async addCourier(@Body() request: CourierAddRequest)
+		: Promise<APIResult<CourierAddResponse>> {
 
 
-export async function updateCourier(req: Request, res: Response)
-	: Promise<AppResult<CourierUpdateResponse>> {
+		const result = await addCourierLogic(request);
 
-	const body = req.body as CourierUpdateReqBody;
+		return this.resolve(result);
 
-	const request = new CourierUpdateRequest(
-		parseInt(req.params["id"]),
-		body
-	);
+	}
 
-	const result = await updateCourierLogic(request);
+	@Delete("{courierID}")
+	async removeCourier(@Path() courierID: number)
+		: Promise<APIResult<RemoveCourierResponse>> {
 
-	return result.isSuccess()
-		? AppResult.ok(result.value!)
-		: AppResult.fail(result.error!);
+		const request: RemoveCourierRequest = { id: courierID };
+
+		const result = await removeCourierLogic(request);
+
+		return this.resolve(result);
+	}
+
+
+	@Put("{courierID}")
+	async updateCourier(
+		@Path() courierID: number,
+		@Body() body: CourierUpdateReqBody
+	): Promise<APIResult<CourierUpdateResponse>> {
+
+		const request = new CourierUpdateRequest(courierID, body);
+
+		const result = await updateCourierLogic(request);
+
+		return this.resolve(result);
+
+	}
 
 }

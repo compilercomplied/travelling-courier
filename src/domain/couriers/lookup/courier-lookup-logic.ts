@@ -1,4 +1,4 @@
-import { AsyncResult } from "../../../core/types";
+import { AsyncDomainResult, AsyncResult, DomainResult } from "../../../core/types";
 import { queryCouriersByCapacity } from "../courier-repo";
 import { LookupRequest, LookupResponse } from "./courier-lookup-dto";
 
@@ -11,10 +11,10 @@ export const findCouriersByCapacity = async (
 	req: LookupRequest, 
 	searchCallback: LookupCourierRepoCallback = queryCouriersByCapacity
 
-) : AsyncResult<LookupResponse> => {
+) : AsyncDomainResult<LookupResponse> => {
 
 	const result = await searchCallback(req);
 
-	return result;
+	return DomainResult.from(result);
 
 }

@@ -8,6 +8,7 @@
 // a different thing.
 export type Optional<T> = T | undefined; 
 
+
 // -----------------------------------------------------------------------------
 export class Result<T> {
 
@@ -49,6 +50,8 @@ export class Result<T> {
 }
 
 export type AsyncResult<T> = Promise<Result<T>>;
+
+
 // -----------------------------------------------------------------------------
 export class DomainError extends Error {
 
@@ -67,3 +70,52 @@ export class DomainError extends Error {
 }
 
 export type DomainErrorType = "Internal" | "Client" | "External" | "Notfound";
+
+
+// -----------------------------------------------------------------------------
+// I like to keep separate monads for internals and externals even if they behave
+// the same way. Even for something this straightforward it still feels like 
+// coupling logic.
+export type AsyncDomainResult<T> = Promise<DomainResult<T>>
+export class DomainResult<T> {
+
+	private constructor(
+		readonly value: Optional<T>,
+		readonly error: Optional<DomainError>
+	) { }
+
+
+	static ok = <T>(value: T): DomainResult<T> => new DomainResult<T>(value, undefined);
+
+	static fail = <T>(error: DomainError | string): DomainResult<T> => {
+
+		const err = (error instanceof DomainError)
+			? error : new DomainError(error);
+
+		return new DomainResult<T>(undefined, err);
+
+	}
+
+	static from = <T>(result: Result<T>): DomainResult<T> => {
+		return new DomainResult(result.value, result.error);
+	}
+
+	isSuccess(): boolean { return this.value !== undefined; }
+
+	unwrap() : T {
+
+		if (!this.value) this.throw();
+
+		return this.value as T;
+
+	}
+
+	private throw(): void {
+		if (this.error) throw this.error;
+
+		throw new Error("Unhandled state unwrapping result");
+
+	}
+
+
+}

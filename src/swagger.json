@@ -1,0 +1,302 @@
+{
+	"components": {
+		"examples": {},
+		"headers": {},
+		"parameters": {},
+		"requestBodies": {},
+		"responses": {},
+		"schemas": {
+			"LookupResponse": {
+				"properties": {
+					"couriers": {
+						"items": {
+							"type": "number",
+							"format": "double"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"couriers"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"Optional_string_": {
+				"type": "string"
+			},
+			"APIError": {
+				"properties": {
+					"Error": {
+						"$ref": "#/components/schemas/Optional_string_"
+					}
+				},
+				"required": [
+					"Error"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"APIResult_LookupResponse_": {
+				"anyOf": [
+					{
+						"$ref": "#/components/schemas/LookupResponse"
+					},
+					{
+						"$ref": "#/components/schemas/APIError"
+					}
+				]
+			},
+			"CourierAddResponse": {
+				"properties": {
+					"id": {
+						"type": "number",
+						"format": "double"
+					}
+				},
+				"required": [
+					"id"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"APIResult_CourierAddResponse_": {
+				"anyOf": [
+					{
+						"$ref": "#/components/schemas/CourierAddResponse"
+					},
+					{
+						"$ref": "#/components/schemas/APIError"
+					}
+				]
+			},
+			"CourierAddRequest": {
+				"properties": {
+					"id": {
+						"type": "number",
+						"format": "double"
+					},
+					"max_capacity": {
+						"type": "number",
+						"format": "double"
+					}
+				},
+				"required": [
+					"id",
+					"max_capacity"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"RemoveCourierResponse": {
+				"properties": {},
+				"type": "object",
+				"additionalProperties": false
+			},
+			"APIResult_RemoveCourierResponse_": {
+				"anyOf": [
+					{
+						"$ref": "#/components/schemas/RemoveCourierResponse"
+					},
+					{
+						"$ref": "#/components/schemas/APIError"
+					}
+				]
+			},
+			"CourierUpdateResponse": {
+				"properties": {
+					"id": {
+						"type": "number",
+						"format": "double"
+					},
+					"max_capacity": {
+						"type": "number",
+						"format": "double"
+					}
+				},
+				"required": [
+					"id",
+					"max_capacity"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"APIResult_CourierUpdateResponse_": {
+				"anyOf": [
+					{
+						"$ref": "#/components/schemas/CourierUpdateResponse"
+					},
+					{
+						"$ref": "#/components/schemas/APIError"
+					}
+				]
+			},
+			"CourierUpdateReqBody": {
+				"properties": {
+					"max_capacity": {
+						"type": "number",
+						"format": "double"
+					}
+				},
+				"required": [
+					"max_capacity"
+				],
+				"type": "object",
+				"additionalProperties": false
+			}
+		},
+		"securitySchemes": {}
+	},
+	"info": {
+		"title": "travelling-courier",
+		"version": "1.0.0",
+		"license": {
+			"name": "ISC"
+		},
+		"contact": {}
+	},
+	"openapi": "3.0.0",
+	"paths": {
+		"/couriers/lookup": {
+			"get": {
+				"operationId": "CapacityLookup",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/APIResult_LookupResponse_"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Couriers"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "query",
+						"name": "capacity_required",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
+			}
+		},
+		"/couriers": {
+			"post": {
+				"operationId": "AddCourier",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/APIResult_CourierAddResponse_"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Couriers"
+				],
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/CourierAddRequest"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/couriers/{courierID}": {
+			"delete": {
+				"operationId": "RemoveCourier",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/APIResult_RemoveCourierResponse_"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Couriers"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "courierID",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
+			},
+			"put": {
+				"operationId": "UpdateCourier",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/APIResult_CourierUpdateResponse_"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Couriers"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "courierID",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/CourierUpdateReqBody"
+							}
+						}
+					}
+				}
+			}
+		}
+	},
+	"servers": [
+		{
+			"url": "/"
+		}
+	]
+}

@@ -1,4 +1,4 @@
-import { AsyncResult } from "../../../core/types";
+import { AsyncDomainResult, AsyncResult, DomainResult } from "../../../core/types";
 import { hardDeleteCourier } from "../courier-repo";
 import { RemoveCourierRequest, RemoveCourierResponse } from "./courier-remove-dto";
 
@@ -11,10 +11,10 @@ export const removeCourierLogic = async (
 	req: RemoveCourierRequest, 
 	deleteCallback: DelCourierRepoCallback = hardDeleteCourier
 
-) : AsyncResult<RemoveCourierResponse> => {
+) : AsyncDomainResult<RemoveCourierResponse> => {
 
 	const result = await deleteCallback(req);
 
-	return result;
+	return DomainResult.from(result);
 
 }

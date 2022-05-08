@@ -1,4 +1,4 @@
-import { AsyncResult } from "../../../core/types";
+import { AsyncDomainResult, AsyncResult, DomainResult } from "../../../core/types";
 import { persistNewCourier } from "../courier-repo";
 import { CourierAddRequest, CourierAddResponse } from "./courier-add-dto";
 
@@ -10,10 +10,10 @@ export const addCourierLogic = async (
 	req: CourierAddRequest, 
 	persistCallback: AddCourierRepoCallback = persistNewCourier
 
-) : AsyncResult<CourierAddResponse> => {
+) : AsyncDomainResult<CourierAddResponse> => {
 
 	const result = await persistCallback(req);
 
-	return result;
+	return DomainResult.from(result);
 
 }

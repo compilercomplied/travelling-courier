@@ -1,6 +1,8 @@
 // Not a fan of relative imports, but I'm used to them.
 import express, { Express } from "express";
-import { routes } from "./routes/v1/index";
+import { RegisterRoutes } from "./routes/routes";
+import * as swaggerUI from "swagger-ui-express";
+import * as swaggerSpec from "./swagger.json";
 
 const app: Express = express();
 
@@ -16,11 +18,10 @@ const port = process.env.PORT ?? 5000;
 
 app.use(express.json());
 
-// By now (first functional commit) I'm already missing a logging other than 
-// invoking express with the debug flag enabled. If I have spare time I'll try 
-// to glue something together and hopefully nobody will read this message.
-app.use(routes.prefix, routes.router);
+app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerSpec));
+RegisterRoutes(app);
 
 app.listen(port, () => {
 	console.log(`Server is runing at http://localhost:${port}`);
+	console.log(`Api docs are enabled at http://localhost:${port}/api-docs/`);
 });
